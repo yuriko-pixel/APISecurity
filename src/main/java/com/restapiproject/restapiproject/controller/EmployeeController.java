@@ -44,20 +44,22 @@ public class EmployeeController {
 
     @GetMapping("/employees/{employeeId}")
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_GENERAL')")
-    public Employee getEmployee(@PathVariable(name="employeeId")Long employeeId) {
+    public Employee getEmployee(@PathVariable(name="employeeId")Long employeeId,@AuthenticationPrincipal AppUserDetails user) {
+    	log.info(user.toString());
+
         return employeeService.getEmployee(employeeId);
     }
 
     @PostMapping("/employees")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public void saveEmployee(@RequestBody Employee employee){
+    public void saveEmployee(@RequestBody Employee employee,@AuthenticationPrincipal AppUserDetails user){
         employeeService.saveEmployee(employee);
         System.out.println("Employee Saved Successfully");
     }
 
     @DeleteMapping("/employees/{employeeId}")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
-    public void deleteEmployee(@PathVariable(name="employeeId")Long employeeId){
+    public void deleteEmployee(@PathVariable(name="employeeId")Long employeeId,@AuthenticationPrincipal AppUserDetails user){
         employeeService.deleteEmployee(employeeId);
         System.out.println("Employee Deleted Successfully");
     }
@@ -65,7 +67,8 @@ public class EmployeeController {
     @PutMapping("/employees/{employeeId}")
     @PreAuthorize("hasRole('ROLE_ADMIN')")
     public void updateEmployee(@RequestBody Employee employee,
-                               @PathVariable(name="employeeId")Long employeeId){
+                               @PathVariable(name="employeeId")Long employeeId,
+                               @AuthenticationPrincipal AppUserDetails user){
         Employee emp = employeeService.getEmployee(employeeId);
         if(emp != null){
             employeeService.updateEmployee(employee);
