@@ -3,7 +3,6 @@ package com.restapiproject.restapiproject.config;
 import javax.sql.DataSource;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -23,7 +22,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
         jsr250Enabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
-    @Qualifier("UserDetailsServiceImpl")
     private UserDetailsService userDetailsService;
 
     @Bean
@@ -63,7 +61,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http
                 .httpBasic().and()
                 .authorizeRequests()
-                .antMatchers("/api/v1/employees").hasAnyRole("ADMIN")
                 .anyRequest().authenticated();
 
         http.csrf().disable();

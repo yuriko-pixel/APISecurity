@@ -34,23 +34,27 @@ public class EmployeeController {
     }
 
     @GetMapping("/employees/{employeeId}")
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_GENERAL')")
     public Employee getEmployee(@PathVariable(name="employeeId")Long employeeId) {
         return employeeService.getEmployee(employeeId);
     }
 
     @PostMapping("/employees")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public void saveEmployee(@RequestBody Employee employee){
         employeeService.saveEmployee(employee);
         System.out.println("Employee Saved Successfully");
     }
 
     @DeleteMapping("/employees/{employeeId}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public void deleteEmployee(@PathVariable(name="employeeId")Long employeeId){
         employeeService.deleteEmployee(employeeId);
         System.out.println("Employee Deleted Successfully");
     }
 
     @PutMapping("/employees/{employeeId}")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     public void updateEmployee(@RequestBody Employee employee,
                                @PathVariable(name="employeeId")Long employeeId){
         Employee emp = employeeService.getEmployee(employeeId);
