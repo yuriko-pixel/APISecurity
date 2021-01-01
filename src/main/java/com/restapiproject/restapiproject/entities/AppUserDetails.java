@@ -4,18 +4,16 @@ package com.restapiproject.restapiproject.entities;
 import java.util.Collection;
 import java.util.Date;
 
+import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@Setter
+@Getter
 public class AppUserDetails implements UserDetails {
 
     // =========================

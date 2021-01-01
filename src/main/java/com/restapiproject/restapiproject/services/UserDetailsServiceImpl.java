@@ -5,7 +5,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import com.restapiproject.restapiproject.repositories.LoginUserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -13,6 +12,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
+import com.restapiproject.restapiproject.repositories.LoginUserRepository;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -43,11 +43,11 @@ public class UserDetailsServiceImpl implements UserDetailsService {
      * 独自認証用のメソッド.
      * ユーザーIDとテナントIDでユーザーを取得する.
      */
-    public UserDetails loadUserByUsernameAndTenantId(String username, String tenantId)
+    public UserDetails loadUserByUsernameAndTenantId(String username)
             throws UsernameNotFoundException {
 
         //リポジトリー(DAO)からUserDetailsを取得
-        UserDetails user = repository.selectOne(username, tenantId);
+        UserDetails user = repository.selectOne(username);
 
         return user;
     }

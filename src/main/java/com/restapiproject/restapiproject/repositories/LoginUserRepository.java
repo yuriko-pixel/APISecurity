@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import com.restapiproject.restapiproject.entities.AppUserDetails;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -17,6 +16,8 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Repository;
+
+import com.restapiproject.restapiproject.entities.AppUserDetails;
 
 
 @Repository
@@ -35,12 +36,6 @@ public class LoginUserRepository {
     private static final String SELECT_USER_SQL = "SELECT * "
             + " FROM m_user"
             + " WHERE user_id = ?";
-
-    /** ユーザー情報を取得するSQL(テナントID) */
-    private static final String SELECT_USER_SQL2 = "SELECT * "
-            + " FROM m_user"
-            + " WHERE user_id = ?"
-            + " AND tenant_id = ?";
 
     /** 権限リストを取得するSQL */
     private static final String SELECT_USER_ROLE_SQL = "SELECT"
@@ -70,35 +65,16 @@ public class LoginUserRepository {
             + " WHERE user_id = ?";
 
     /**
-     * ユーザー情報を取得して、UserDetailsを生成するメソッド.
-     */
-    public UserDetails selectOne(String userId) {
-
-        //select実行(ユーザーの取得)
-        Map<String, Object> userMap = jdbc.queryForMap(SELECT_USER_SQL, userId);
-
-        //権限リストの取得（メソッド）
-        List<GrantedAuthority> grantedAuthorityList = getRoleList(userId);
-
-        // 結果返却用のUserDetailsを生成
-        AppUserDetails user = buildUserDetails(userMap, grantedAuthorityList);
-
-        return user;
-    }
-
-    /**
      * ユーザー情報を取得して、UserDetailsを生成するメソッド.<br/>
      * テナントIDも渡す.
      */
-    public UserDetails selectOne(String userId, String tenantId) {
+    public UserDetails selectOne(String userId) {
 
         AppUserDetails user = null;
 
         try {
             //select実行(ユーザーの取得)
-            Map<String, Object> userMap = jdbc.queryForMap(SELECT_USER_SQL2,
-                    userId,
-                    tenantId);
+            Map<String, Object> userMap = jdbc.queryForMap(SELECT_USER_SQL,userId);
 
             //権限リストの取得（メソッド）
             List<GrantedAuthority> grantedAuthorityList = getRoleList(userId);
@@ -160,9 +136,7 @@ public class LoginUserRepository {
         boolean unlock = (Boolean) userMap.get("unlock");
         boolean enabled = (Boolean) userMap.get("enabled");
         Date userDueDate = (Date) userMap.get("user_due_date");
-        String tenantId = (String) userMap.get("tenant_id");
         String appUserName = (String) userMap.get("user_name");
-        String mailAddress = (String) userMap.get("mail_address");
 
         // 結果返却用のUserDetailsを生成
         AppUserDetails user = new AppUserDetails().builder()
@@ -173,9 +147,7 @@ public class LoginUserRepository {
                 .unlock(unlock)
                 .enabled(enabled)
                 .userDueDate(userDueDate)
-                .tenantId(tenantId)
                 .appUserName(appUserName)
-                .mailAddress(mailAddress)
                 .authority(grantedAuthorityList)
                 .build();
 
